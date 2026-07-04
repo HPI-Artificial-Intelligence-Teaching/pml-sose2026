@@ -1,0 +1,244 @@
+\documentclass[a4paper]{article}
+\usepackage[square,sort,comma,numbers]{natbib}
+\usepackage{blindtext} % Package to generate dummy text
+\usepackage{charter} % Use the Charter font
+\usepackage[utf8]{inputenc} % Use UTF-8 encoding
+\usepackage[T1]{fontenc}
+\usepackage{mathpazo}
+\usepackage{microtype} % Slightly tweak font spacing for aesthetics
+\usepackage{amsthm, amsmath, amssymb, amsfonts} % Mathematical typesetting
+\usepackage{float} % Improved interface for floating objects
+\usepackage{hyperref} % For hyperlinks in the PDF
+\usepackage{graphicx, multicol} % Enhanced support for graphics
+\usepackage{xcolor} % Driver-independent color extensions
+\usepackage{pseudocode} % Environment for specifying algorithms in a natural way
+\usepackage{datetime} % Uses YEAR-MONTH-DAY format for dates
+\usepackage{mathabx}
+
+\usepackage{tikz}
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{arrows}
+\usetikzlibrary{shapes,shapes.geometric,shapes.misc}
+\usetikzlibrary{positioning}
+
+% this style is applied by default to any tikzpicture included via \tikzfig
+\tikzstyle{tikzfig}=[baseline=-0.25em,scale=0.5,node distance=1.5cm,
+  variablenode/.style={circle, draw=black, thick, minimum size=5mm},
+  observedvariablenode/.style={circle, draw=black, fill=gray!50, thick, minimum size=5mm},
+  factornode/.style={rectangle, draw=black, thick, fill=black, minimum size=4mm},
+  connection/.style={-, >=stealth, thick, rounded corners},
+  message/.style={->, >=stealth, thick, rounded corners}]
+
+% these are dummy properties used by TikZiT, but ignored by LaTex
+\pgfkeys{/tikz/tikzit fill/.initial=0}
+\pgfkeys{/tikz/tikzit draw/.initial=0}
+\pgfkeys{/tikz/tikzit shape/.initial=0}
+\pgfkeys{/tikz/tikzit category/.initial=0}
+
+% standard layers used in .tikz files
+\pgfdeclarelayer{edgelayer}
+\pgfdeclarelayer{nodelayer}
+\pgfsetlayers{background,edgelayer,nodelayer,main}
+
+% style for blank nodes
+\tikzstyle{none}=[inner sep=0mm]
+
+% include a .tikz file
+\newcommand{\tikzfig}[1]{%
+{\tikzstyle{every picture}=[tikzfig]
+\IfFileExists{#1.tikz}
+  {\input{#1.tikz}}
+  {%
+    \IfFileExists{./figures/tikz/#1.tikz}
+      {\input{./figures/#1.tikz}}
+      {\tikz[baseline=-0.5em]{\node[draw=red,font=\color{red},fill=red!10!white] {\textit{#1}};}}%
+  }}%
+}
+
+% the same as \tikzfig, but in a {center} environment
+\newcommand{\ctikzfig}[1]{%
+\begin{center}\rm
+  \tikzfig{#1}
+\end{center}}
+
+% fix strange self-loops, which are PGF/TikZ default
+\tikzstyle{every loop}=[]
+
+\addtolength{\hoffset}{-2.25cm}
+\addtolength{\textwidth}{4.5cm}
+\addtolength{\voffset}{-3.25cm}
+\addtolength{\textheight}{5cm}
+
+\setlength{\parskip}{1ex}
+\setlength{\parindent}{0in}
+
+\DeclareUnicodeCharacter{03B1}{$\alpha$}
+
+\usepackage{fancyhdr} % Headers and footers
+\pagestyle{fancy} % All pages have headers and footers
+\fancyhead{}\renewcommand{\headrulewidth}{0pt} % Blank out the default header
+\fancyfoot[L]{} % Custom footer text
+\fancyfoot[C]{} % Custom footer text
+\fancyfoot[R]{\thepage} % Custom footer text
+\newtheorem{thm}{Theorem}
+\newtheorem{cor}{Corollary}
+
+% define new commands
+\newcommand{\Real}{{\mathbb R}}
+\newcommand{\Normal}[3]{{\mathcal N} \left({#1};{#2},{#3}\right)}
+\newcommand{\Gauss}[3]{{\mathcal G} \left({#1};{#2},{#3}\right)}
+\newcommand{\NormalStandard}[1]{{\mathcal N} \left({#1}\right)}
+\newcommand{\GaussStandard}[1]{{\mathcal G} \left({#1}\right)}
+\newcommand{\NormalCDF}[3]{\Phi \left({#1};{#2},{#3}\right)}
+\newcommand{\NormalStandardCDF}[1]{\Phi \left({#1}\right)}
+\newcommand{\Bernoulli}[2]{{\mathrm{Ber}} \left({#1};{#2}\right)}
+\newcommand{\Ber}[2]{{\mathcal B} \left({#1};{#2}\right)}
+\newcommand{\expect}[1]{{\mathbb E \left[ {#1} \right]}}
+\newcommand{\bs}[1]{{\boldsymbol{#1}}}
+\newcommand{\var}[1]{{\mathbb V \left[ {#1} \right]}}
+\newcommand{\dirac}[1]{{\delta \left( {#1} \right)}}
+\newcommand{\diag}[1]{{\mathrm{diag}\left( {#1} \right)}}
+\newcommand{\uniform}[1]{{\mathcal U} \left( {#1} \right)}
+\newcommand{\identity}[1]{{{\mathbb{I}} \left( {#1} \right)}}
+\newcommand{\incoming}[1]{\widecheck{#1}}
+\newcommand{\outgoing}[1]{\widehat{#1}}
+\newcommand{\intd}[1]{\ \mathrm{d}{#1}}
+\newcommand{\transpose}[1]{{#1}^\top}
+\newcommand{\kl}[3]{{\mathrm{KL}_{#1}} \left[{#2};{#3}\right]}
+% \newcommand{\incoming}[1]{\stackrel{\rightarrow}{#1}}
+% \newcommand{\outgoing}[1]{\stackrel{\leftarrow}{#1}}
+\newcommand{\neighbours}[1]{{\mathrm{ne} \left( {#1} \right)}}
+
+
+% define new environments
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+%-------------------------------
+%	TITLE SECTION (do not modify unless you really need to)
+%-------------------------------
+\fancyhead[C]{}
+\hrule \medskip
+\begin{minipage}{0.295\textwidth}
+    \raggedright
+    \hfill\\
+    % \footnotesize
+    % Start: 24.4.2023\\
+    % Return: 19.5.2023 \hfill\\
+    % \href{https://classroom.github.com/classrooms/124387260-hpi-artificial-intelligence-teaching-pml-classroom}{https://classroom.github.com}
+\end{minipage}
+\begin{minipage}{0.4\textwidth}
+    \centering
+    \large
+    Information Theory\\
+\end{minipage}
+\begin{minipage}{0.295\textwidth}
+    \raggedleft
+    \hfill\\
+\end{minipage}
+\medskip\hrule
+\bigskip
+ 
+In this short note, we will derive some of the results of unit 12 on {\em information theory}. 
+\section*{Background}
+The distribution that we will most commonly use is the one-dimensional Gaussian distribution.
+\begin{definition}[One-Dimensional Gaussian Distribution]
+    Given parameters $\mu \in \Real$, $\sigma \in \Real^+$, $\tau \in \Real$, and $\rho \in \Real^+$, a one-dimensional random variable $X \in \Real$ is distributed according to a one-dimensional Gaussian distribution if the density has the form $\Normal{\cdot}{\mu}{\sigma^2}$ or $\Gauss{\cdot}{\tau}{\rho}$ with
+    \begin{align}
+        \Normal{x}{\mu}{\sigma^2} & := \frac{1}{\sqrt{2\pi}\cdot \sigma} \cdot \exp \left( -\frac{(x-\mu)^2}{2\sigma^2}\right) \,, \label{eq:Normal_definition} \\
+        \Gauss{x}{\tau}{\rho}     & := \sqrt{\frac{\rho}{2\pi}} \cdot \exp\left(-\frac{\tau^2}{2\rho} \right) \cdot \exp \left(\tau\cdot x - \rho \cdot \frac{x^2}{2} \right) \,. \label{eq:Gauss_definition}
+    \end{align}
+    If $\mu = \tau = 0$ and $\sigma^2 = \rho = 1$ we simply write 
+    \begin{align}
+        \NormalStandard{x} & := \Normal{x}{0}{1} \,, \\
+        \GaussStandard{x}  & := \Gauss{x}{0}{1} \,.
+    \end{align}
+\end{definition}
+Note that both definitions are identical when using the identities
+\begin{align}
+    \tau & = \frac{\mu}{\sigma^2} & \mbox{and} &  & \rho     & = \sigma^{-2}\,,                                       &  &  & \mbox{or} \\
+    \mu  & = \frac{\tau}{\rho}    & \mbox{and} &  & \sigma^2 & = \rho^{-1} \,. \label{eq:Gauss_Normal_transformation}
+\end{align}
+Also note that if $X \sim \Normal{\cdot}{\mu}{\sigma^2}$ we know that $\expect{X}=\mu$, $\expect{X^2}=\mu^2 + \sigma^2$, and $\var{X}=\sigma^2$.
+
+\section*{Entropy}
+\begin{definition}[Entropy]
+    Given $b > 1$, the entropy $H_b[X]$ of a random variable $X$ with density $p_X$ is defined as
+    \begin{align}
+        H_b[X] & := -\expect{\log_b \left( p_X(X) \right)} \,.
+    \end{align}
+    If $X$ is a discrete random variable, we can write this as
+    \begin{align}
+        H_b(X) & = -\sum_{x} p_X(x) \cdot \log_b\left( p_X(x) \right)  \,.
+    \end{align}
+\end{definition}
+
+\begin{theorem}[Maximumm Entropy]
+    The entropy $H_b[X]$ of a discrete random variable $X$ is maximized if and only if $X$ is uniformly distributed, that is, if $p_X(x) = \frac{1}{|\mathcal{X}|}$ for all $x \in \mathcal{X}$.
+\end{theorem}
+\begin{proof}
+    The proof follows from Jensen's inequality, which states that for any concave function $f$ and random variable $X$ we have $\expect{f(X)} \leq f(\expect{X})$. The function $f(x) = \log_b(x)$ is concave for $x > 0$, and thus we have
+    \begin{align}
+        H_b[X] & = -\expect{\log_b(p_X(X))} = \expect{\log_b\left(\frac{1}{p_X(X)}\right)} \leq \log_b\left(\expect{\frac{1}{p_X(X)}}\right) = \log_b(|\mathcal{X}|) \,.
+    \end{align}
+    Since $\log_b(\cdot)$ is a non-linear function, the equality holds if and only if $p_X(x)$ is constant, which is the case if and only if $X$ is uniformly distributed.
+\end{proof}
+
+
+\begin{theorem}[Entropy of a Gaussian Distribution]
+    The natural entropy $H_e[X]$ of a random variable distributed according to a one-dimensional Gaussian distribution $\Normal{\cdot}{\mu}{\sigma^2}$ is given by
+    \begin{align}
+        H_e[X] & = \frac{1}{2}\left(\log_e(2\pi\sigma^2) + 1 \right) \,.
+    \end{align}
+\end{theorem}
+\begin{proof}
+    The proof follows from the definition of the entropy and the definition of the Gaussian distribution.
+    \begin{align*}
+        H_e[X] & = -\expect{\log_e\left(\Normal{X}{\mu}{\sigma^2}\right)} \\
+               & = -\expect{\log_e\left(\frac{1}{\sqrt{2\pi\sigma^2}} \cdot \exp \left( -\frac{(X-\mu)^2}{2\sigma^2}\right)\right)} \\
+               & = -\expect{-\frac{1}{2}\log_e(2\pi\sigma^2) - \frac{(X-\mu)^2}{2\sigma^2}}  \\ 
+               & = -\left(-\frac{1}{2}\log_e(2\pi\sigma^2) - \frac{\sigma^2}{2\sigma^2}\right) = \frac{1}{2}\left(\log_e(2\pi\sigma^2) + 1 \right) \,.
+    \end{align*}
+    The last equality follows from the fact that $\expect{(X - \mu)^2} = \var{X} = \sigma^2$.
+\end{proof}
+
+\section*{KL Divergence}
+
+\begin{definition}[KL Divergence]
+    Given $b > 1$ and two random variables $X$ and $Y$ with densities $p_X$ and $p_Y$, the KL divergence $\kl{b}{X}{Y}$ is defined as
+    \begin{align}
+        \kl{b}{X}{Y} & := \int p_X(x) \cdot \log_b \left(\frac{p_X(x)}{p_Y(x)}\right) \intd{x} \,.
+    \end{align}
+\end{definition}
+
+\begin{theorem}[KL Divergence of a Gaussian Distribution]
+    The KL divergence $\kl{e}{X}{Y}$ of two random variables $X$ and $Y$ distributed according to a one-dimensional Gaussian distributions $\Normal{\cdot}{\mu_X}{\sigma_X^2}$ and $\Normal{\cdot}{\mu_Y}{\sigma_Y^2}$, respectively, is given by
+    \begin{align}
+        \kl{e}{X}{Y} & = \frac{1}{2}\left(\log_e\left(\frac{\sigma_Y^2}{\sigma_X^2}\right) + \frac{\sigma_X^2 + (\mu_X - \mu_Y)^2}{\sigma_Y^2} - 1\right) \,.
+    \end{align}
+\end{theorem}
+
+\begin{proof}
+    In the proof we use the following variance-decomposition identity for $X \sim \Normal{\cdot}{\mu_X}{\sigma_X^2}$:
+    \begin{align}
+        \expect{(X - c)^2} & =  \expect{((X - \mu_X) + (\mu_X - c))^2} = \expect{(X - \mu_X)^2} + \expect{(\mu_X - c)^2} = \sigma_X^2 + (\mu_X - c)^2\,, \label{eq:variance_decomposition}
+    \end{align}
+    where the third step follows from the fact that $\expect{(X - \mu_X)} = 0$. The proof follows from the definition of the KL divergence and the definition \eqref{eq:Normal_definition} for $X \sim \Normal{\cdot}{\mu_X}{\sigma_X^2}$.
+    \begin{align*}
+        \kl{e}{X}{Y} & = \expect{\log_e\left(\frac{p_X(X)}{p_Y(X)}\right)} \\
+                     & = \expect{\log_e\left(\frac{\Normal{X}{\mu_X}{\sigma_X^2}}{\Normal{X}{\mu_Y}{\sigma_Y^2}}\right)} \\
+                     & = \expect{\log_e\left(\frac{\sqrt{2\pi\cdot \sigma_Y^2}}{\sqrt{2\pi\cdot \sigma_X^2}} \cdot \exp\left(-\frac{(X-\mu_X)^2}{2\sigma_X^2} + \frac{(X-\mu_Y)^2}{2\sigma_Y^2}\right) \right)} \\
+                     & = \expect{\frac{1}{2}\log_e\left(\frac{\sigma_Y^2}{\sigma_X^2}\right) - \frac{(X-\mu_X)^2}{2\sigma_X^2} + \frac{(X-\mu_Y)^2}{2\sigma_Y^2}} \\
+                     & = \frac{1}{2} \cdot \left(\log_e\left(\frac{\sigma_Y^2}{\sigma_X^2}\right) - 1 + \frac{\sigma_X^2 + \left( \mu_X - \mu_Y \right)^2}{\sigma_Y^2}\right) \,,
+    \end{align*}
+    where we used the variance-decomposition identity \eqref{eq:variance_decomposition} in the penultimate step.
+\end{proof}
+
+\end{document}
